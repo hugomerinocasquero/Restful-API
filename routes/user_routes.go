@@ -4,12 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"api/controllers"
+	"api/middleware"
 )
 
 func RegisterUserRoutes(router *gin.Engine) {
-	router.GET("/users", controllers.GetUsers)
-	router.POST("/users", controllers.CreateUser)
-	router.GET("/users/:id", controllers.GetUserByID)
-	router.PUT("/users/:id", controllers.UpdateUser)
-	router.DELETE("/users/:id", controllers.DeleteUser)
+	users := router.Group("/users", middleware.RequireAPIKey())
+	{
+		users.GET("", controllers.GetUsers)
+		users.POST("", controllers.CreateUser)
+		users.GET("/:id", controllers.GetUserByID)
+		users.PUT("/:id", controllers.UpdateUser)
+		users.DELETE("/:id", controllers.DeleteUser)
+	}
 }
